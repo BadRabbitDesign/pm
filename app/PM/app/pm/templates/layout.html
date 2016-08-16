@@ -1,0 +1,118 @@
+
+<html>
+<head>
+
+<title>Project Manager</title>
+
+
+{% if config.USE_LOCAL_JQUERY==True %}
+    <link   rel="stylesheet" href="{{ url_for('static', filename='jquery/jquery-ui.css') }}">
+    <script src="{{ url_for('static', filename='jquery/jquery-1.10.2.js')}}"></script>
+    <script src="{{ url_for('static', filename='jquery/jquery-ui.js')}}"></script>
+{% else %}
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+    <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+    <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+{% endif %}
+
+
+
+<link rel=stylesheet type=text/css   href="{{ url_for('static', filename='style.css') }}">
+<link rel="stylesheet" type=text/css href="{{ url_for('static', filename='font-awesome-4.3.0/css/font-awesome.min.css') }}">
+
+
+{% block style %}
+{% endblock %}
+
+
+<script type="text/javascript">
+    $(document).ready(function() {
+
+        $('#dialog_help').dialog({
+                    autoOpen: false,
+                   
+        });
+        $('#opener').click(function() {
+            $('#dialog_help').dialog('open');
+            });
+       });
+</script>
+
+
+
+{% block javascript %}
+
+{% endblock %}
+
+
+
+</head>
+
+<body onload="init()">
+
+
+
+<div id="dialog_help" title="Help">
+  <p>
+  {% if not help%}
+    <b>No Help Has Been Registered for this page</b>
+  {% else %}
+    {{help |safe}}
+  {% endif %}
+  
+ </p>
+</div>
+
+
+<div class="parent">
+    <div class=header>
+    <img src="{{ url_for('static', filename=config.TITLE_IMAGE) }}" alt="" align="right" >
+    <h1>{{ config.TITLE }}{% block pageTitle %}{% endblock %}</h1>
+    
+    {% if current_user.is_authenticated %}
+         <font color="green"><i class="fa fa-unlock fa">Logged in as {{current_user.name}} {% if g.role %}With Role:{{g.role}}{% endif %}</i></font></br>
+    {% else %}
+         <font color="red"><i class="fa fa-lock fa">Not Logged In</i></font></br>
+    {% endif %}
+    
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <ul class=flashes>
+    {% for message in messages %}
+      <li>{{ message }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
+    </ul>
+    
+    </div>
+    <hr>
+  
+
+    <div class="sidebar">
+    
+        <table border=0>
+                <tr><td><a href={{url_for('.project_manager')}} class="button"><i class="fa fa-home">Home</i></a></td></tr>
+            {% if current_user.is_authenticated %}
+                <tr><td><a href={{url_for('.logout')}} class="button"><i class="fa fa-lock">Log Out</i></a></td></tr>
+                <tr><td><a href={{url_for('.showMyWork')}} class="button"><i class="fa fa-th-list">My Work</i></a></td></tr>
+            {% else %}
+                <tr><td><a href={{url_for('.login')}} class="button"><i class="fa fa-unlock"> Log In</i></a></td></tr>
+            {% endif %}
+        <tr><td><hr></td></tr>
+       {% block sidebar %} {% endblock %}
+        <tr><td><hr></td></tr>
+       <tr><td><button  type="button"  id="opener" class="button"> <i class="fa fa-cog" > Help </i></button></td></tr>
+       </table>
+
+    </div>
+        
+    <div class="content">
+        {% block content %}{% endblock %} 
+   </div>  
+
+</div>
+
+</body>
+</html>

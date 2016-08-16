@@ -1,0 +1,46 @@
+{% extends "layout.html" %}
+
+{% block javascript %}
+<script type="text/javascript" >
+
+function sbmit_item() {
+    var r = confirm("Create New Project ?");
+    if (r == true) 
+    {
+        document.getElementById('new_prj_frm').submit();
+    }
+ }
+</script>
+
+{% endblock %}
+
+{% block message %}
+    {{ form_message }}
+{% endblock %}
+
+{% block pageTitle %}
+ - New Project
+{% endblock %}
+
+{% block sidebar %}
+    <tr><td>
+    <button onclick="sbmit_item()" class="button"><i class="fa fa-cog">Create Project</i></button> 
+    </td></tr>
+
+{% endblock %}
+
+
+{% block content %}
+<form method="POST" id="new_prj_frm" action={{url_for('.newProject')}}>
+ {{ form.csrf_token }}
+  <div class=project>
+    <table>
+    <tr><td>{{form.name.label}}       </td> <td> {{form.name}}{{form.name.errors | first}}</td></tr>
+    <tr><td>{{form.description.label}}</td> <td> {{form.description(rows=5,cols=50)}}{{form.description.errors | first}}</td></tr>
+    <tr><td>{{form.owner.label}}      </td> <td> {{form.owner(readonly=true) }}{{form.owner.errors | first}}</td></tr>
+    <tr><td>{{form.is_private.label}}  </td> <td> {{form.is_private}}</td></tr>
+    <tr><td>{{form.notes.label}}  </td> <td> {{form.notes(rows=10,cols=50)}}</td></tr>
+    </table> 
+   </div>
+</form>
+{% endblock %} 

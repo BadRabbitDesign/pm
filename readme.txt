@@ -1,0 +1,1 @@
+sudo postgresql-setup initdb

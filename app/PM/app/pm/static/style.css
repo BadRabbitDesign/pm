@@ -1,0 +1,197 @@
+
+
+body
+{
+
+ /*background-color: #A3A375;*/
+ /*background-color: #D1FFFF;*/
+ background-color:white;
+}
+
+
+
+a, h1, h2{ 
+  color: #377BA8; 
+}
+
+a{
+text-decoration: none;
+}
+
+h1, h2{ 
+  font-family: 'Georgia', serif; margin: 0; 
+}
+
+h1{ 
+  /*border-bottom: 2px solid #eee;
+  padding-top:2px;
+  padding-bottom:2px;
+  margin:2px;*/
+  
+  font-size: 2em; 
+}
+
+h2{ 
+  font-size: 1.2em; 
+}
+
+.project button
+{
+    outline: 0;   
+    background: none;
+    border: 0; 
+}
+
+.project button:hover
+{
+    border: 1px solid black; 
+}
+
+/*
+.sidebar button{
+    display: block;
+
+    width: 90%;
+    margin: 5px;
+    padding-left:5px;
+    padding-top:10px;
+    padding-bottom:10px;
+    background-color:  grey;
+    vertical-align: middle;
+    border: 1px solid #fff;
+    text-align: left;
+}
+
+.sidebar button.a{
+    text-decoration: none;
+}
+
+.sidebar button:hover {
+    background: #3d7a80;
+}
+*/
+
+
+.parent {
+    margin-left: auto;
+    margin-right: auto;    
+    width: 95vw; 
+    height: 95vh; 
+    border: 1px solid gray;
+}
+
+
+.header { 
+margin:1px;
+
+height: 15%; 
+padding-left:30px;
+overflow: hidden
+}
+
+.sidebar{ 
+width: 10em; 
+border-right:  1px solid grey;
+float: left;
+}
+
+
+
+.sidebar ul
+{
+    list-style-type: none;
+    padding-left:0px;
+    
+}
+
+.sidebar li {
+   float: left; 
+   width: 90%;
+   margin: 2px;
+   padding-left:5px;
+   padding-top:10px;
+   padding-bottom:10px;
+   background-color:  grey;
+   vertical-align: middle;
+   border: 1px solid #fff; 
+}
+
+.sidebar li:hover {
+    background-color: yellow;
+}  
+
+
+
+.content{ 
+overflow: auto;
+height:75%;
+padding-top:10px;
+padding-bottom:10px;
+padding-left:30px;
+}
+
+.project table {
+ border-collapse: collapse;
+}
+
+
+.project table,.project td  {
+    text-align: left;
+    padding:10px;
+    border: 1px solid light grey; 
+}
+
+.user_display {
+  display: inline-block;
+  margin: 2px;
+}
+
+
+
+.tooltip-wrap {
+  position: relative;
+  display:  inline-block;
+}
+.tooltip-wrap .tooltip-content {
+  display: none;
+  width: 500px;
+  position: absolute;
+  bottom: 5%;
+  left: 5%;
+  right: 5%;
+  background-color: #fff;
+  padding: .5em;
+}
+
+.tooltip-wrap:hover .tooltip-content {
+  display: block;
+}
+
+
+
+.sidebar  .button{
+    
+    display: table-cell;
+    font: bold 18px Arial;
+    text-decoration: none;
+    background-color: #EEEEEE;
+    color: #333333;
+    padding: 2px 2px 2px 2px;
+    border-top: 1px solid #CCCCCC;
+    border-right: 1px solid #333333;
+    border-bottom: 1px solid #333333;
+    border-left: 1px solid #CCCCCC;
+    width:150px;
+    height:50px;
+    text-align:center;
+    vertical-align: middle;
+}
+
+
+
+.comments td 
+{
+    vertical-align: top;
+}
+
+

@@ -1,0 +1,275 @@
+{% extends "layout.html" %}
+
+{% block style %}
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+
+
+{% endblock %}
+
+{% block javascript %}
+
+
+<script type="text/javascript">
+
+
+    
+
+ 
+function addComment() {
+    var commentStr = document.getElementById('comment_text_area').value; 
+    if (commentStr != null) 
+    {
+        method = "post"; 
+        var form = document.createElement("form");
+        form.setAttribute("method", method);
+
+    
+        var hiddenField = document.createElement("input");
+        hiddenField.setAttribute("type", "hidden");
+        hiddenField.setAttribute("name", "add_comment");
+        hiddenField.setAttribute("value", commentStr);
+
+        form.appendChild(hiddenField);
+      
+        document.body.appendChild(form);
+        form.submit();
+    }
+}
+
+
+function sbmit_item() 
+{
+    var r = confirm("Update Task ?");
+    if (r == true) 
+    {
+        document.getElementById('update_task').submit();
+    }
+ }
+ 
+ 
+ 
+ 
+ function do_Close() 
+{
+    var r = confirm("Close Task ?");
+    if (r == true) 
+    {
+      
+    }
+ }
+ 
+ 
+
+ 
+$(document).ready(function() {
+     $( "#form_task-dateDue" ).datepicker({ minDate: -0, dateFormat: 'yy-mm-dd'});
+     
+     $('#dialog').dialog({
+                modal:true,
+                width: 500,
+                autoOpen: false,
+                title: 'Close Task',
+                
+                buttons:
+        [
+       
+            {
+                text: "Cancel",
+                id: "btnCancel",
+                click: function () { $(this).dialog("close"); },
+            },
+            {
+                text: "Confirm",
+                id: "btnConfirm",
+                click: function () { doCloseTask();} ,
+              },
+        ]
+                
+                
+                
+            });
+            
+            $('#close').click(function () {
+                $('#dialog').dialog('open');
+            });
+     
+     
+  });
+ 
+function doCloseTask() 
+{
+    var cid = $("#closeOption").val();
+    var url = "{{url_for('main.TaskClose',tsk=task.id)}}&cid=" + cid; 
+    window.location.href = url;
+} 
+
+
+</script>
+ 
+ 
+{% endblock %}
+
+
+
+
+{% block message %}
+    {{ form_message }}
+{% endblock %}
+
+{% block pageTitle %}
+ - Tasks
+{% endblock %}
+
+{% block sidebar %} 
+  <tr><td><a href="{{url_for('main.showProjectOverview',pid=task.project_id)}}" class="button"><i class="fa fa-thumb-tack"> Show Project</i></a></td></tr>
+    {% if task.parent_id %}
+        <tr><td><a href="{{url_for('main.showTask',tid=task.parent_id)}}" class="button"><i class="fa fa-level-up"> Task Parent</i></a></td></tr>
+    {% endif %}
+   
+  
+    {% if current_user.is_authenticated %}
+        {%if task.isOpen() %}
+            <!--<tr><td><a href="{{url_for('main.TaskClose',tsk=task.id)}}" class="button"><i class="fa fa-plus"> Close Task </i></a></td></tr>-->  
+            <tr><td><button id="close" class="button"><i class="fa fa-cog"> Close Task</i></button> </td></tr>  
+            <tr><td><button onclick="sbmit_item()" class="button"><i class="fa fa-cog"> Update Task</i></button> </td></tr>  
+            <tr><td><a href="{{url_for('main.TaskAddTask',tsk=task.id)}}" class="button"><i class="fa fa-plus"> Add Sub Task</i></a></td></tr>  
+            <tr><td><a href={{url_for('main.ModifyTaskActors',tsk=task.id)}} class="button"><i class="fa fa-users"> Task Team</i></a></td></tr> 
+        {%else%}
+            <tr><td><a href="{{url_for('main.TaskReOpen',tsk=task.id)}}" class="button"><i class="fa fa-plus"> Re-Open Task </i></a></td></tr>  
+        {% endif %}    
+    {% endif %}
+
+{% endblock %}
+
+
+{% block content %}
+
+
+
+
+
+<h2>Task Detail 
+
+ {% if task.isOpen() == False %}
+ : Task Was Closed on {{ task.dateClosed | strftime}}
+ {% endif %}
+
+</h2>
+
+  <div class=project >
+        {%  if task  %}
+        
+        <table>
+        <tr>
+        <td><b>Assignees:</b></td>
+        <td>
+        {% for a in task.actors %}
+            
+            <div class=user_display  title="Group membership TODO">{{a.name}}</div> ,
+        {% else %}
+            no one has been assigned this task
+        {% endfor %}
+        </td>
+        
+   
+        
+        <input type="hidden" name="tsk" value="{{ task.id }}">
+        <form  method="POST" id="update_task"  action={{url_for('main.showTask',tsk=task.id)}}>
+        {{ form.csrf_token }}
+        
+        <tr><td>{{form.name.label}}       </td> <td> {{form.name(cols=50)}}{{form.name.errors | first}}</td></tr>
+        <tr><td>{{form.description.label}}</td> <td> {{form.description(rows=5,cols=80)}}{{form.description.errors | first}}</td></tr>
+        <tr><td>{{form.owner.label}}      </td> <td> {{form.owner (readonly=true)}}</td></tr>
+        <tr><td>{{form.dateDue.label}}    </td> <td> {{form.dateDue}}</td></tr>
+        <tr><td>{{form.duration.label}}   </td> <td> {{form.duration}}</td></tr>
+        <tr><td>{{form.priority.label}}   </td> <td> {{form.priority}}</td></tr>
+        <tr><td>{{form.risk.label}}       </td> <td> {{form.risk}}</td></tr>
+        {%if form.comment.data%}
+        <tr><td><i class="fa fa-comments">{{form.comment.label}} </i>   </td> <td> {{form.comment(rows=5,cols=80,style="border:1px solid red")}}</td></tr>
+        {%else%}
+        <tr><td><i class="fa fa-comments">{{form.comment.label}} </i>   </td> <td> {{form.comment(rows=5,cols=80)}}</td></tr>
+        {%endif%}
+        <tr><td>{{form.is_hidden.label}}  </td> <td> {{form.is_hidden}}</td></tr>
+        </table>
+        </form> 
+        
+        <div class="comments" >
+        {% if task.child_comment %}
+             <table >
+              <th style="width:25em"></th>
+               <th></th>
+             {% for c in task.child_comment %}
+              <tr>
+                <td>
+                    <i class="fa fa-comments"></i> {{c.date | strftime}}, {{c.getActorName()}} said..  
+                </td>
+                <td>{{c.comment | nl2br|safe}}</td>
+              </tr>
+              
+             {% endfor %}
+             </table> 
+        {% endif %}
+        </div>
+        
+       
+        </br>
+        <hr>
+        </br>
+        {% if task.sub_task %}
+        <h2> Sub Tasks</h2>
+        
+            {%- for st in task.sub_task recursive %}
+            <li>
+             <a href="{{ url_for('main.showTask',tid=st.id) }}"><i class="fa fa-external-link">GOTO Task:{{st.name}}
+             {%- if st.isOpen() == False -%}
+                [Closed]
+             {%-endif -%}
+             </i></a>  
+                                
+                <div class="tooltip-wrap" >
+                    <div class="tooltip-content" >
+                        <table style="border : none;">
+                            <tr><td><b>Task:       </b></td> <td>{{ st.name }}</td> </tr>
+                            <tr><td><b>Description:</b></td> <td>{{ st.desc }}</td> </tr>
+                            <tr><td><b>Opened:     </b></td> <td>{{ st.dateOpened|dateFilter }}</td> </tr> 
+                            {% if st.dateDue%}
+                                <tr><td><b>Due:        </b></td> <td>{{ st.dateDue|dateFilter }}</td> </tr>
+                            {% else %}
+                                <tr><td><b>Due:        </b></td> <td>NOT SET</td> </tr>
+                            {%endif%}
+                        </table>       
+                    </div> 
+                </div> 
+                </li>
+                {%- if st.sub_task -%}
+                    <ul>{{ loop(st.sub_task) }}</ul>
+                {%- endif %}</li>
+            {%- endfor %}
+
+     
+    {% else %}
+    </br> 
+        <b>No Sub Tasks Exist</b>
+    {% endif %}  
+    </div>
+
+ {%- endif %}
+ 
+ 
+ <div id="dialog">
+   
+    {% if task.GetCloseOptions() %}
+    <select id="closeOption" >
+        {% for x in task.GetCloseOptions() %}
+        <option  value="{{x.id}}">{{x.name}}</option> 
+        {%- endfor %}
+    </select>
+    {% endif %} 
+
+ </div>
+ 
+ 
+ 
+ 
+
+{% endblock %} 

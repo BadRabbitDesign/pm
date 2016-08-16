@@ -1,0 +1,35 @@
+{% extends "layout.html" %}
+
+{% block javascript %}
+
+{% endblock %}
+
+{% block message %}
+    {{ form_message }}
+{% endblock %}
+
+{% block pageTitle %}
+ - xxxxxxxxx
+{% endblock %}
+
+
+{% block sidebar %}
+    <form  method="GET">
+    <input type="hidden" name="project_id" value="{{ project.id }}">
+    
+    
+    {% if 'username' in session %}
+        <button type="submit" name="sideBarAction" value="button_log_out" ><i class="fa fa-lock"> Log Out</i></button> 
+    {% else %}
+        <button type="submit" name="sideBarAction" value="button_log_in" ><i class="fa fa-unlock"> Log In</i></button> 
+    {% endif %}
+    
+    <button type="submit" name="sideBarAction" value="button_help" ><i class="fa fa-info"> Help</i></button> 
+    <button type="submit" name="sideBarAction" value="button_back" ><i class="fa fa-level-up"></i> Back</i></button>
+    
+    </form>
+{% endblock %}
+
+{% block content %}
+  <h1> NEW PAGE </h1>
+{% endblock %}

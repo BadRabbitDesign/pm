@@ -1,0 +1,73 @@
+{% extends "layout.html" %}
+
+{% block style %}
+
+{% endblock %}
+
+{% block javascript %}
+
+
+<script type="text/javascript" >
+
+
+
+function sbmit_item() 
+{
+    var r = confirm("Create New Task ?");
+    if (r == true) 
+    {
+        document.getElementById('new_task_frm').submit();
+    }
+ }
+
+ 
+ 
+$(document).ready(function() {
+     $( "#dateDue" ).datepicker({ minDate: -0, dateFormat: 'yy-mm-dd'});
+  });
+ 
+
+ 
+</script>
+
+{% endblock %}
+
+{% block message %}
+    {{ form_message }}
+{% endblock %}
+
+{% block pageTitle %}
+ - New Task
+{% endblock %}
+
+{% block sidebar %}
+    <tr><td>
+    <button onclick="sbmit_item()" class="button"><i class="fa fa-cog"> Create Task</i></button> 
+    </td></tr>
+{% endblock %}
+
+
+{% block content %}
+<h1>{{title}}</h1>
+<form method="POST" id="new_task_frm" action={{url_for(g.target)}}>
+ <input type="hidden" name="{{_name}}" value="{{_value}}">
+ {{ form.csrf_token }}
+  <div class=project>
+    <table>
+    <tr><td>{{form.name.label}}       </td> <td> {{form.name(rows=1,cols=50)}}{{form.name.errors | first}}</td></tr>
+    <tr><td>{{form.description.label}}</td> <td> {{form.description(rows=5,cols=80)}}{{form.description.errors | first}}</td></tr>
+    <tr><td>{{form.owner.label}}      </td> <td> {{form.owner}}{{form.owner.errors | first}}</td></tr>
+    <tr><td>{{form.dateDue.label}}    </td> <td> {{form.dateDue}}</td></tr>
+    <tr><td>{{form.priority.label}}   </td> <td> {{form.priority}}</td></tr>
+    <tr><td>{{form.risk.label}}       </td> <td> {{form.risk}}</td></tr>
+    <tr><td>{{form.is_hidden.label}}  </td> <td> {{form.is_hidden}}</td></tr>
+    </table>
+    </div>
+</form>
+
+
+
+
+
+
+{% endblock %} 

@@ -1,0 +1,351 @@
+{% extends "layout.html" %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='calendar.css') }}"/> 
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+
+
+
+
+  <style>
+   
+    label, input { display:block; }
+    input.text { margin-bottom:12px; width:95%; padding: .4em; }
+    fieldset { padding:0; border:0; margin-top:25px; }
+    h1 { font-size: 1.2em; margin: .6em 0; }
+    div#users-contain { width: 350px; margin: 20px 0; }
+    div#users-contain table { margin: 1em 0; border-collapse: collapse; width: 100%; }
+    div#users-contain table td, div#users-contain table th { border: 1px solid #eee; padding: .6em 10px; text-align: left; }
+    .ui-dialog .ui-state-error { padding: .3em; }
+    .validateTips { border: 1px solid transparent; padding: 0.3em; }
+  </style>
+
+
+
+
+{% endblock %}
+
+{% block javascript %}
+
+<script type="text/javascript" src="{{ url_for('static', filename='calendar.js') }}"></script> 
+
+<script type="text/javascript">
+
+function init() {
+	calendar.set("dateDue");
+    }
+    
+    
+    
+ function showhide(id) {
+    var e = document.getElementById(id);
+    e.style.display = (e.style.display == 'block') ? 'none' : 'block';
+ }
+ 
+ 
+ function addComment() {
+    
+    //var commentStr = prompt("Enter a comment", "");
+    
+    
+    var commentStr = document.getElementById('comment_text_area').value; 
+    if (commentStr != null) 
+    {
+        method = "post"; 
+        var form = document.createElement("form");
+        form.setAttribute("method", method);
+
+    
+        var hiddenField = document.createElement("input");
+        hiddenField.setAttribute("type", "hidden");
+        hiddenField.setAttribute("name", "add_comment");
+        hiddenField.setAttribute("value", commentStr);
+
+        form.appendChild(hiddenField);
+      
+        document.body.appendChild(form);
+        form.submit();
+    }
+}
+
+ 
+ 
+ 
+   $(function() {
+    var dialog, form,
+ 
+      // From http://www.whatwg.org/specs/web-apps/current-work/multipage/states-of-the-type-attribute.html#e-mail-state-%28type=email%29
+      emailRegex = /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/,
+      name = $( "#name" ),
+      email = $( "#email" ),
+      password = $( "#password" ),
+      allFields = $( [] ).add( name ).add( email ).add( password ),
+      tips = $( ".validateTips" );
+ 
+    function updateTips( t ) {
+      tips
+        .text( t )
+        .addClass( "ui-state-highlight" );
+      setTimeout(function() {
+        tips.removeClass( "ui-state-highlight", 1500 );
+      }, 500 );
+    }
+ 
+    function checkLength( o, n, min, max ) {
+      if ( o.val().length > max || o.val().length < min ) {
+        o.addClass( "ui-state-error" );
+        updateTips( "Length of " + n + " must be between " +
+          min + " and " + max + "." );
+        return false;
+      } else {
+        return true;
+      }
+    }
+ 
+    function checkRegexp( o, regexp, n ) {
+      if ( !( regexp.test( o.val() ) ) ) {
+        o.addClass( "ui-state-error" );
+        updateTips( n );
+        return false;
+      } else {
+        return true;
+      }
+    }
+ 
+    function addUser() {
+      var valid = true;
+      allFields.removeClass( "ui-state-error" );
+ 
+      valid = valid && checkLength( name, "username", 3, 16 );
+      valid = valid && checkLength( email, "email", 6, 80 );
+      valid = valid && checkLength( password, "password", 5, 16 );
+ 
+      valid = valid && checkRegexp( name, /^[a-z]([0-9a-z_\s])+$/i, "Username may consist of a-z, 0-9, underscores, spaces and must begin with a letter." );
+      valid = valid && checkRegexp( email, emailRegex, "eg. ui@jquery.com" );
+      valid = valid && checkRegexp( password, /^([0-9a-zA-Z])+$/, "Password field only allow : a-z 0-9" );
+ 
+      if ( valid ) {
+        $( "#users tbody" ).append( "<tr>" +
+          "<td>" + name.val() + "</td>" +
+          "<td>" + email.val() + "</td>" +
+          "<td>" + password.val() + "</td>" +
+        "</tr>" );
+        dialog.dialog( "close" );
+      }
+      return valid;
+    }
+ 
+    dialog = $( "#dialog-form" ).dialog({
+      autoOpen: false,
+      height: 300,
+      width: 350,
+      modal: true,
+      buttons: {
+        "Create an account": addUser,
+        Cancel: function() {
+          dialog.dialog( "close" );
+        }
+      },
+      close: function() {
+        form[ 0 ].reset();
+        allFields.removeClass( "ui-state-error" );
+      }
+    });
+ 
+    form = dialog.find( "form" ).on( "submit", function( event ) {
+      event.preventDefault();
+      addUser();
+    });
+ 
+    $( "#create-user" ).button().on( "click", function() {
+      dialog.dialog( "open" );
+    });
+  });
+ 
+ </script>
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+<script type="text/javascript" >
+
+
+function sbmit_item() 
+{
+    var r = confirm("Create New Task ?");
+    if (r == true) 
+    {
+        document.getElementById('new_task_frm').submit();
+    }
+ }
+</script>
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+{% endblock %}
+
+
+
+
+{% block message %}
+    {{ form_message }}
+{% endblock %}
+
+{% block pageTitle %}
+ - Tasks
+{% endblock %}
+
+{% block sidebar %}
+    {% if task.parent_id %}
+        <tr><td><a href="{{url_for('main.showTask',tid=task.parent_id)}}" class="button"><i class="fa fa-level-up"> Task Parent</i></a></td></tr>
+    {% endif %}
+    <tr><td><a href="{{url_for('main.showProjectOverview',pid=task.project_id)}}" class="button"><i class="fa fa-thumb-tack"> Show Project</i></a></td></tr>
+  
+    {% if current_user.is_authenticated  %}
+      <tr><td><a href="{{url_for('main.TaskAddTask',tsk=task.id)}}" class="button"><i class="fa fa-plus"> Add Sub Task</i></a></td></tr>  
+      <tr><td><a href={{url_for('main.ModifyTaskActors',tsk=task.id)}} class="button"><i class="fa fa-users"> Task Team</i></a></td></tr>     
+    {% endif %}
+   
+    
+     
+      
+     
+    <button id="create-user">Create new user</button>
+{% endblock %}
+
+
+{% block content %}
+
+
+
+
+
+
+
+
+
+<div id="dialog-form" title="Create new user">
+  <p class="validateTips">All form fields are required.</p>
+ 
+  <form>
+    <fieldset>
+      <label for="name">Name</label>
+      <input type="text" name="name" id="name" value="Jane Smith" class="text ui-widget-content ui-corner-all">
+      <label for="email">Email</label>
+      <input type="text" name="email" id="email" value="jane@smith.com" class="text ui-widget-content ui-corner-all">
+      <label for="password">Password</label>
+      <input type="password" name="password" id="password" value="xxxxxxx" class="text ui-widget-content ui-corner-all">
+ 
+      <!-- Allow form submission with keyboard without duplicating the dialog button -->
+      <input type="submit" tabindex="-1" style="position:absolute; top:-1000px">
+    </fieldset>
+  </form>
+</div>
+
+
+
+
+
+<h2>Task Detail </h2>
+
+  <div class=project >
+        {%  if task  %}
+        
+        <form  method="POST" id="update_task"> 
+        
+        <input type="hidden" name="tsk" value="{{ task.id }}">
+        
+        
+        {{ form.csrf_token }}
+        <table>
+        <tr><td>{{form.name.label}}       </td> <td> {{form.name(cols=50)}}{{form.name.errors | first}}</td></tr>
+        <tr><td>{{form.description.label}}</td> <td> {{form.description(rows=10,cols=80)}}{{form.description.errors | first}}</td></tr>
+        <tr><td>{{form.owner.label}}      </td> <td> {{form.owner}}{{form.owner.errors | first}}</td></tr>
+        <tr><td>{{form.dateDue.label}}    </td> <td> {{form.dateDue}}</td></tr>
+        <tr><td>{{form.priority.label}}   </td> <td> {{form.priority}}</td></tr>
+        <tr><td>{{form.is_public.label}}  </td> <td> {{form.is_public}}</td></tr>
+        <tr><td>Assignees</td><td>
+       
+        {% for a in task.actors %}
+            <div class=user_display  title="Group membership TODO">{{a.name}}</div> ,
+        {% else %}
+            no one has been assigned this task
+        {% endfor %}
+        </br>
+   
+        </td></tr>
+        </table>
+        </form> 
+        {% if task.child_comment %}
+             <HR WIDTH="60%" ALIGN="LEFT" SIZE="6">
+             {% for c in task.child_comment %}
+              
+                <i class="fa fa-comments">On</i> {{c.date | strftime}}, {{c.getActorName()}} said..  {{c.comment | nl2br|safe}}
+                <HR WIDTH="60%" ALIGN="LEFT" SIZE="6">
+               
+             {% endfor %}
+       
+        {% endif %}
+        
+         
+         <textarea  id="comment_text_area" rows="4" cols="50">
+         
+         </textarea>
+         
+         <button onclick="addComment()" title="Add a comment to this task" >
+        <i class="fa fa-comments">Comment</i>
+        </button> 
+        </br>
+        
+        {% if task.sub_task %}
+        <h2> Sub Tasks</h2>
+        
+            {%- for st in task.sub_task recursive %}
+            <li>
+             <a href="{{ url_for('main.showTask',tid=st.id) }}"><i class="fa fa-external-link">GOTO Task:{{st.name}}</i></a>                     
+                <div class="tooltip-wrap" >
+                    <div class="tooltip-content" >
+                        <table style="border : none;">
+                            <tr><td><b>Task:</b></td> <td>{{ st.name }}</td> </tr>
+                            <tr><td><b>Description:</b></td> <td>{{ st.desc }}</td> </tr>
+                            <tr><td><b>Opened:     </b></td> <td>{{ st.dateOpened|dateFilter }}</td> </tr> 
+                            <tr><td><b>Due:        </b></td> <td>{{ st.dateDue|dateFilter }}</td> </tr>
+                        </table>       
+                    </div> 
+                </div> 
+                </li>
+                {%- if st.sub_task -%}
+                    <ul>{{ loop(st.sub_task) }}</ul>
+                {%- endif %}</li>
+            {%- endfor %}
+
+     
+    {% else %}
+    </br> 
+        <b>No Sub Tasks Exist</b>
+    {% endif %}  
+    </div>
+
+ {%- endif %}
+
+
+
+{% endblock %} 

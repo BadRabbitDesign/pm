@@ -1,0 +1,143 @@
+{% extends "layout.html" %}
+
+{% block style %}
+
+
+<style>
+    .project_table          { display: table;border: 1px solid black;}
+	.cPT_Row                { display: table-row; }
+	.cPT_Hdr                { display: table-header-group; }
+	.rTableBody             { display: table-row-group; }
+	.rTableFoot             { display: table-footer-group; }
+	.cPT_Cell, .rTableHead  { display: table-cell; vertical-align:middle;padding: 2px; }	
+</style>
+
+{% endblock %}
+
+
+{% block javascript %}
+
+<script type="text/javascript">
+
+ $(function() {
+    $( "#accordion" ).accordion({
+    active: false,
+    collapsible: true,
+    });
+  });
+
+</script>
+
+
+
+
+{%- endblock -%}
+
+{%- block message -%}
+    {{ form_message }}
+{% endblock %}
+
+{% block pageTitle -%}
+ - Project Detail:{{project.name}}
+{%- endblock -%}
+
+{%- block sidebar -%}
+    <tr><td><a href="{{url_for('main.showProjectDetail',pid=project.id)}}" class="button"><i class="fa fa-plus"> Project Detail</i></a></td></tr>
+    {% if current_user.is_authenticated %}
+        <tr><td><a href="{{url_for('main.projectAddTask',prj=project.id)}}" class="button"><i class="fa fa-plus"> Add Task</i></a></td></tr>
+    {%- endif -%}    
+{%- endblock -%}
+
+
+{%- block content -%}
+
+
+{%- import "macros.html" as macros -%}
+
+
+
+        
+        {% if project %}
+
+            <hr align="left" width="25%">
+            <B> Project Team :</B>
+             
+                {% for a in project.actors %}
+                <div class=user_display  title="Group membership TODO">{{a.name}}</div> ,
+                {% endfor %}
+            </br>
+            <hr align="left" width="25%">
+                
+            
+             {% if project.GetChildTasks() %}  
+         
+                 <div class="project_table">
+                 
+                 
+             
+                  </div> <div id="accordion"> 
+                 
+                {% for t in project.GetChildTasks() %}
+                
+                        {% set n,late,latest = t.getAllSubTaskStatus() %}
+                
+                        <h3>
+                        <div class="cPT_Row" >
+                          <div class="cPT_Cell">{{ macros.TRAFFIC_LIGHTS(t) }}</div>
+                          <div class="cPT_Cell">{{ macros.SHOW_INSET_ARROW(1) }}</div>
+                          <div class="cPT_Cell">Task "{{t.name}}" has {{n}} subtasks, of which {{late}} are late</div> 
+                        </div>
+                        </h3>
+                          
+                        <div>
+                        <p>
+                          <div class="cPT_Row" >
+                           
+                             <div class="caption" style="padding-bottom:10px; font-size: 2em">
+                              <a href="{{ url_for('main.showTask',tid=t.id) }}"><i class="fa fa-external-link">Task:{{t.name}}</i></a>
+                             </div>
+                            </div>
+                               <div class="group">
+                                 {%- if t.sub_task -%}
+                                
+                                    {%- for st in t.sub_task recursive -%}
+                                       <div class="cPT_Row" >
+                                       
+                                         <div class="cPT_Cell">
+                                           {{ macros.TRAFFIC_LIGHTS(st) }}
+                                         </div>
+                                       
+                                       
+                                         <div class="cPT_Cell">
+                                           {{ macros.SHOW_INSET_ARROW(loop.depth+1) }}
+                                           <a href="{{ url_for('main.showTask',tid=st.id) }}"><i class="fa fa-external-link">{{st.name}}</i></a>
+                                         </div>
+                                       </div>
+                                       {%- if st.sub_task -%}
+                                         {{ loop(st.sub_task) }}
+                                       {%- endif -%}
+                                     {%- endfor -%} 
+                                     
+                                 {% else %}
+                                 
+                                    No Sub Tasks
+                                   
+                                 {%- endif -%}
+                                 </div>
+                                 
+                           </p>
+                            </div>
+                                
+                              
+                {% endfor %} 
+                </div>    
+             {% endif %}
+            
+            
+        {% else %}
+            <h2> Sorry, no projects found! </h2>
+            
+        {% endif %}
+       
+
+{% endblock %} 

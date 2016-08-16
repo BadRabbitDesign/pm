@@ -1,0 +1,162 @@
+{% extends "layout.html" %}
+
+{% block javascript %}
+<script type="text/javascript">
+ function showhide(id) {
+    var e = document.getElementById(id);
+    e.style.display = (e.style.display == 'block') ? 'none' : 'block';
+ }
+</script>
+
+
+
+<script type="text/javascript" >
+
+function sbmit_item() {
+    var r = confirm("Update Project Details ?");
+    if (r == true) 
+    {
+        document.getElementById('new_prj_frm').submit();
+    }
+ }
+</script> 
+ 
+ <script>
+  $(function() {
+    $( "#accordion" ).accordion({
+    active: false,
+    collapsible: true,
+    });
+  });
+
+</script>
+
+
+
+
+{% endblock %}
+
+{% block message %}
+    {{ form_message }}
+{% endblock %}
+
+{% block pageTitle %}
+ - Project Detail
+{% endblock %}
+
+{% block sidebar %}
+
+
+    <tr><td><a href="{{url_for('main.showProjectOverview',pid=project.id)}}" class="button"><i class="fa fa-plus"> Project Overview</i></a></td></tr>
+    
+    {% if current_user.is_authenticated %}
+    
+        <tr><td><a href="{{url_for('main.projectAddTask',prj=project.id)}}" class="button"><i class="fa fa-plus"> Add Task</i></a></td></tr>
+        <tr><td><a href={{url_for('main.ModifyProjectActors',prj=project.id)}} class="button"><i class="fa fa-users"> Project Team</i></a></td></tr>
+        <tr><td><button onclick="sbmit_item()" class="button"><i class="fa fa-cog"> Update Project Details</i></button> </td></tr>
+
+    {% endif %}
+
+    
+    
+    
+{% endblock %}
+
+
+{% block content %}
+<h2>Project Detail </h2>
+        
+        {% if project %}
+
+           </br>
+           
+           <form method="POST" id="new_prj_frm" action={{url_for('main.showProjectDetail',pid=project.id)}}> 
+
+           
+             {{ form.csrf_token }}
+              <div class=project>
+                <table>
+                <tr><td>{{form.name.label}}         </td> <td> {{form.name}}{{form.name.errors | first}}</td></tr>
+                <tr><td>{{form.description.label}}  </td> <td> {{form.description(rows=5,cols=75)}}{{form.description.errors | first}}</td></tr>
+                <tr><td>{{form.owner.label}}        </td> <td> {{form.owner(readonly=true) }}{{form.owner.errors | first}}</td></tr>
+                <tr><td>{{form.is_private.label}}   </td> <td> {{form.is_private}}</td></tr>
+                <tr><td>{{form.notes.label}}        </td> <td> {{form.notes(rows=7,cols=75)}}</td></tr>
+                </table>
+                </div>
+                {{form.pid}}
+            </form>
+           
+           
+            </br>
+            <hr align="left" width="25%">
+            <B> Project Team :</B>
+             
+                {% for a in project.actors %}
+                <div class=user_display  title="Group membership TODO">{{a.name}}</div> ,
+                {% endfor %}
+           
+            
+           
+            </br>
+            <hr align="left" width="25%">
+                
+            
+             {% if project.GetChildTasks() %}
+                <form action="/showTask" method="GET">
+                <h2> Tasks</h2>
+             
+                <div class=project style="width:80%;">
+                <div id="accordion">
+                {% for t in project.GetChildTasks() %}
+                    
+                    
+          
+                        <h3>{{t.name }}</h3>
+       
+                        <div>
+                            <p>
+                                <a href="{{ url_for('main.showTask',tid=t.id) }}"><i class="fa fa-external-link">GOTO Task:{{t.name}}</i></a>
+                                <table border="0">
+                                <tr><td>Description:</td>   <td>{{ t.desc }}</td> </tr> 
+                                <tr><td>Opened:</td>        <td>{{ t.dateOpened|dateFilter}} </td></tr>
+                                {% if t.dateDue %}
+                                    <tr><td>Due:</td>           <td>{{ t.dateDue|dateFilter }}</td></tr>
+                                {% else %}
+                                    <tr><td>Due:</td>           <td>????</td></tr>
+                                {% endif %}
+                                
+                                <tr><td>
+                                <h3> Sub Tasks</h3>
+                                 {% if t.sub_task %}
+                                    <ul>
+                                    {%- for st in t.sub_task recursive %}
+                                        <li>
+                                        <a href="{{ url_for('main.showTask',tid=st.id) }}"><i class="fa fa-external-link">{{st.name}}</i></a>
+                                        {%- if st.sub_task -%}
+                                            <ul>
+                                            {{ loop(st.sub_task) }}
+                                            </ul>
+                                        {%- endif %}
+                                       </li>
+                                     {%- endfor %}
+                                     </ul>
+                                 {% endif %}
+                                </td></tr>       
+                                </table>
+                            </p>
+                        </div>
+                
+                
+                {% endfor %} 
+                 </div>  
+                </div> 
+             {% endif %}
+            
+            
+        {% else %}
+            <h2> Sorry, no projects found! </h2>
+            
+        {% endif %}
+       
+
+{% endblock %} 

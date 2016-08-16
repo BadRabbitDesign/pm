@@ -1,0 +1,62 @@
+{% extends "layout.html" %}
+
+{% block javascript %}
+<script type="text/javascript">
+ 
+ function submit_item(id) {
+    var r = confirm("Add actor to project ?");
+    if (r == true) 
+    {
+        document.getElementById(id).submit();
+    } 
+    }
+    
+</script>
+
+{% endblock %}
+
+{% block message %}
+    {{ form_message }}
+{% endblock %}
+
+{% block pageTitle %}
+ - {{actionDesc}}
+{% endblock %}
+
+
+{% block sidebar %}
+   
+{% endblock %}
+
+{% block content %}
+
+  <h2> Actors </h2>
+  <form  id="add_actors" method="POST">
+  {% if g.pid %}
+    <input type="hidden" name="prj" value="{{g.pid}}"> 
+  {% elif g.tid %}
+    <input type="hidden" name="tsk" value="{{g.tid}}"> 
+  {% endif %}
+  
+  <ul>
+  {% for a in actors %}
+      
+            {%if a.locked%}
+                <div style="display:none;">
+                <input name="actors" type="checkbox"  value="{{a.id}}"  checked="checked" />
+                </div>
+                <li><input name="actors" type="checkbox"  value="{{a.id}}"  checked="checked" disabled="disabled"/>{{a.name}}</li>
+            
+            {% elif a.checked %}
+                <li><input name="actors" type="checkbox"  value="{{a.id}}" checked="checked"/>{{a.name}} </li>
+            {% else %}
+                <li><input name="actors" type="checkbox"  value="{{a.id}}" > {{a.name}}</li> 
+            {% endif %}
+     
+  {% endfor %}
+  </ul>
+  </form>
+  <div class="sidebar">
+  <button  type="button"  onclick="submit_item('add_actors');" class="button" ><i class="fa fa-cog"> Update </i></button>
+  </div>
+{% endblock %}

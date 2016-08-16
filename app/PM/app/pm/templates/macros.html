@@ -1,0 +1,70 @@
+
+{%- macro TRAFFIC_LIGHTS_TABLE(T) -%}
+    <td>
+    {% set task_status,due_in = T.getTaskStatus() %}
+    
+    {%if task_status == 0 %}
+        <img src="{{ url_for('static', filename=config.TASK_DONE_IMAGE) }}" alt=""  title=Closed:{{T.dateClosed}} >
+        <td></td>
+    {% else %}
+        {% if (due_in < config.TASK_LATE) %}
+            <img src="{{ url_for('static', filename=config.TASK_LATE_IMAGE) }}" alt=""  title=Overdue:{{T.dateDue}}>
+            
+         {% elif (due_in < config.TASK_IMENENT ) %}
+            <img src="{{ url_for('static', filename=config.TASK_IMENENT_IMAGE) }}" alt="" title=Due:{{T.dateDue}}>
+            
+         {% elif (due_in < config.TASK_DUE ) %}
+            <img src="{{ url_for('static', filename=config.TASK_DUE_IMAGE) }}" alt=""title=Due:{{T.dateDue}}>
+         {%else%}
+            <img src="{{ url_for('static', filename=config.TASK_FUTURE_IMAGE) }}" alt=""title=Due:{{T.dateDue}}>
+       {% endif %}
+        <td>{{due_in}}</td>
+    {% endif %}
+    </td>
+{%- endmacro %}
+
+
+{%- macro TRAFFIC_LIGHTS(T) -%}
+  
+    {% set task_status,due_in = T.getTaskStatus() %}
+    
+    {%if task_status == 0 %}
+        <img src="{{ url_for('static', filename=config.TASK_DONE_IMAGE) }}" alt=""  title=Closed:{{T.dateClosed}} style="vertical-align: middle;">
+    
+    {% else %}
+        {% if (due_in < config.TASK_LATE) %}
+            <img src="{{ url_for('static', filename=config.TASK_LATE_IMAGE) }}" alt=""  title=Overdue:{{T.dateDue}} style="vertical-align: middle;">
+            
+         {% elif (due_in < config.TASK_IMENENT ) %}
+            <img src="{{ url_for('static', filename=config.TASK_IMENENT_IMAGE) }}" alt="" title=Due:{{T.dateDue}} style="vertical-align: middle;">
+            
+         {% elif (due_in < config.TASK_DUE ) %}
+            <img src="{{ url_for('static', filename=config.TASK_DUE_IMAGE) }}" alt=""title=Due:{{T.dateDue}} style="vertical-align: middle;">
+         {%else%}
+            <img src="{{ url_for('static', filename=config.TASK_FUTURE_IMAGE) }}" alt=""title=Due:{{T.dateDue}} style="vertical-align: middle;">
+       {% endif %}
+       
+        {% if due_in>0 %}
+            <span style="vertical-align: middle;" title="Day To Go..">{{due_in}}</span>
+        {% else %}
+            <span style="vertical-align: middle;" title="Days Late..">{{due_in}}</span>
+         {% endif %}
+    {% endif %}
+ 
+{%- endmacro %}
+
+
+
+{%- macro SHOW_INSET_ARROW(depth) -%}
+
+    {%- for x in range(depth-1) -%}
+        <img src="{{url_for('static', filename='images/space.png')}}" alt="" align="left" border="0" >
+    {%- endfor -%}
+    
+    {%- if depth > 1 -%}
+        <img src="{{url_for('static', filename='images/black_A.png')}}" alt="" align="left" border="0" >
+    {%- endif -%}
+    
+        <img src="{{url_for('static', filename='images/black_line.png')}}" alt="" align="left" border="0" >
+        <img src="{{url_for('static', filename='images/arrow_side_black.png')}}" alt="" align="left" border="0" >
+{%- endmacro %}

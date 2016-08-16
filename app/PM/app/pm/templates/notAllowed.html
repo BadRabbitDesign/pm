@@ -1,0 +1,10 @@
+{% extends "layout.html" %}
+{% block content %}
+  <h1>I'm Affraid you dont have the necissary permissions to do that!</h1>
+  <img src="{{ url_for('static', filename=config.BAD_PERMISSION_IMAGE) }}" alt="" style="position: absolute;
+    margin: auto;
+    left: 0; 
+    right: 0;
+    top: 0;
+    bottom: 0;  " >
+{% endblock %}

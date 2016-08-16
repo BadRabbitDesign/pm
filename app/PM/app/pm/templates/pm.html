@@ -1,0 +1,53 @@
+{% extends "layout.html" %}
+
+{% block javascript %}
+<script type="text/javascript" src="{{ url_for('static', filename='script.js') }}"></script>
+<script>
+  $(function() {
+    $( "#accordion" ).accordion({
+    active: false,
+    collapsible: true,
+    });
+  });
+</script>
+
+
+{% endblock %}
+
+{% block message %}
+    {{ form_message }}
+{% endblock %}
+
+{% block sidebar %}
+   
+    {% if current_user.is_authenticated %}
+        <hr>
+        <tr><td><a href={{url_for('.newProject')}} class="button"><i class="fa fa-file-text-o">New Project</i></a></td></tr>
+    {% endif %}
+
+{% endblock %}
+
+
+{% block content %}
+
+    <div class=project style="width:80%;">
+        <div id="accordion">
+         {% for p in projects %}
+          
+          <h3>{{ p.name }}</h3>
+       
+          <div>
+            <p>
+                    <a href="{{ url_for('main.showProjectOverview',pid=p.id) }}"><i class="fa fa-external-link">GOTO Project:{{p.name}}</i></a>
+                    <table border="0">
+                         <tr><td>Description:</td> <td>{{ p.desc }}</td> </tr> 
+                         <tr><td>Opened:</td><td>{{ p.dateOpened | strftime}} </td></tr>
+                         <tr><td>Owner:</td><td>{{ p.owner.name }}</td></tr>
+                    </table>
+            </p>
+          </div>
+          {% endfor %}
+        </div>  
+    </div> 
+
+{% endblock %} 
