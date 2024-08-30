@@ -63,7 +63,7 @@ def addSomeProjects():
         
         #add random number of actors to a poject
         prj_actors=[]
-        for a in range(randint(0, 5)): 
+        for a in range(randint(0, len(_actors))): 
             prj_actors.append(_actors[act[a]])
             
         _project.setActors(prj_actors)
@@ -100,7 +100,7 @@ def AddClosedAs():
 
 if __name__ == '__main__':
     
-    print sqlalchemy.__version__ 
+    print (sqlalchemy.__version__ )
     
     
    
@@ -118,13 +118,13 @@ if __name__ == '__main__':
     
     
     my_actors=database.db_session.query(Actors).all()
-    print my_actors
+    print (my_actors)
     
 
-    if False:
+    if True:
 
         for p in database.db_session.query(Projects):
-            print ("P_%s  owner=%s"%(p.name, p.owner.name))
+            print ("P_%s  owner=%s"%(p.name, p.project_owner.name))
             
             for a in p.actors:
                 print ("->A_%s_%s"%(a.name, a.email))
@@ -139,17 +139,17 @@ if __name__ == '__main__':
             print
         
         
-        print "============================================="
+        print ("=============================================")
         for a in database.db_session.query(Actors):
-             print "Actor = %s" %a.name
+             print ("Actor = %s" %a.name)
              print("Projects...")
              for p in a.projects:
-                 print "P::%s" %p.name
+                 print ("P::%s" %p.name)
              print
              print("tasks...")    
              for t in a.tasks:
-                 print "T::%s" %t.name
-             print
-             print
+                 print ("T::%s" %t.name)
+             print()
+             print()
         pass 
     

@@ -6,19 +6,19 @@ import config
 
 
 
-connection = None
-connection = os.environ.get('DATABASE_URL')
+# connection = None
+# connection = os.environ.get('DATABASE_URL')
 
-if connection is None:
-    connection="postgresql://admin:@localhost/pm2000"
+# if connection is None:
+#     connection="postgresql://admin:@localhost/pm2000"
     
     
-#connection='sqlite:///pm.db'
+connection='sqlite:///pm.db'
 
 
 
 
-engine = create_engine( connection, convert_unicode=True)
+engine = create_engine( connection)#, convert_unicode=True)
 
 
 db_session = scoped_session(sessionmaker(autocommit=False,

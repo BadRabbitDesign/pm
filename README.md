@@ -37,3 +37,6 @@ The basic idea is to allow the creation of *projects*, and *nested subtasks*.
  * flask-debugtoolbar
  * flask-nav
  * flask-login
+
+
+**pip -e .** 
