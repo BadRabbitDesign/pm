@@ -1,5 +1,5 @@
 #main
-from flask.ext.login import LoginManager
+from flask_login import LoginManager
 from flask import Blueprint
 
 

@@ -34,7 +34,7 @@ import sys
 
 import logging
 
-from database import Base, db_session
+from pm2000.dal.database import Base, db_session
 
 from flask_login import UserMixin
 
@@ -168,8 +168,8 @@ class Tasks(Base):
     child_comment = relationship("Comments")
     sub_task: Mapped[List[Tasks]] = relationship("Tasks", lazy="joined", join_depth=6)
 
-    project = relationship("Projects", backref=backref("tasks", order_by=id))
-    actors = relationship("Actors", secondary="task_actors_link")
+    project = relationship("Projects", backref=backref("tasks", order_by=id),viewonly=True )
+    actors :Mapped[List[Actors]]= relationship("Actors", secondary="task_actors_link" )
 
     def __init__(
         self,
@@ -333,7 +333,7 @@ class Tasks(Base):
         ast = get_st(t)
 
         late = 0
-        latest = sys.maxint
+        latest = sys.maxsize
 
         if len(ast) > 0:
             n = len(ast)
@@ -434,7 +434,7 @@ class Comments(Base):
     is_hidden: Mapped[bool] = mapped_column(default=False)
     task_id: Mapped[int] = mapped_column(ForeignKey("tasks.id"))
     actor_id: Mapped[int] = mapped_column(ForeignKey("actors.id"))
-    task = relationship("Tasks", backref=backref("comments", order_by=id))
+    task = relationship("Tasks", viewonly=True,backref=backref("comments", order_by=id))
 
     def __init__(self, _content, _actor_id, _task_id):
         self.comment = _content.lstrip()
@@ -484,9 +484,9 @@ class Actors(UserMixin, Base):
     parent: Mapped[Projects] = relationship(back_populates="project_owner")
 
     projects: Mapped[List[Projects]] = relationship(
-        "Projects", secondary="project_actors_link"
+        "Projects", secondary="project_actors_link",viewonly=True
     )
-    tasks = relationship("Tasks", secondary="task_actors_link")
+    tasks:Mapped[List[Tasks]] = relationship("Tasks", secondary="task_actors_link",viewonly=True)
 
     @staticmethod
     def addNewActor(user_name, email, name=None):
@@ -520,9 +520,9 @@ class Actors(UserMixin, Base):
         Logger.info("Actors.verify_password")
         verified = False
         try:
-            pwhash = bcrypt.hashpw(
-                password.encode("utf-8"), self.password.encode("utf-8")
-            ).decode()
+            
+            password_bytes=password.encode("utf-8")
+            pwhash = bcrypt.hashpw(password_bytes, self.password)
             verified = self.password == pwhash
 
         except:

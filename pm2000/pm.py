@@ -3,8 +3,10 @@ import os
 from app.pm import create_app
 import random, string
 from flask_debugtoolbar import DebugToolbarExtension
+from flask_mail import Mail
 import datetime
-from flask.ext.mail import Mail
+
+
 
 
 

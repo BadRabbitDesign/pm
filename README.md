@@ -39,4 +39,6 @@ The basic idea is to allow the creation of *projects*, and *nested subtasks*.
  * flask-login
 
 
-**pip -e .** 
+
+# debug/devel
+pip -e .

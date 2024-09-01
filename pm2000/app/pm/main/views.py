@@ -2,26 +2,26 @@
 
 from . import main
 from sqlite3 import dbapi2 as sqlite3
-from flask import Flask, request, session, g, redirect, url_for, abort, \
-     render_template, flash, _app_ctx_stack,json,Markup,jsonify, current_app
+from flask import Flask, request, session, g, redirect, url_for,render_template,flash,json
 from datetime import timedelta
 import random, string
 import platform
-from models import Projects, Tasks, Actors, Comments, ClosedAs
-from functools import wraps
-from forms import FormProject, FormTask, LoginForm, PRIORITY_CHOICES, RISK_CHOICES
+from pm2000.dal.models import Projects, Tasks, Actors, Comments, ClosedAs
+from pm2000.app.pm.main.forms import FormProject, FormTask, LoginForm, PRIORITY_CHOICES, RISK_CHOICES
 from wtforms import validators
-from flask.ext.login import login_user,logout_user,login_required,current_user
+from flask_login import login_user,logout_user,login_required,current_user
+from flask_cors import CORS,cross_origin
 import re
-from jinja2 import evalcontextfilter, Markup, escape
+from functools import wraps
+#from jinja2 import evalcontextfilter, Markup, escape
 
 from . import login_manager
-import redirectback as back
+import pm2000.app.pm.main.redirectback as back
 #from decorators import requires_roles
 import logging
-import helpers
+import pm2000.app.pm.main.helpers as helpers
 
-from filters import *
+from pm2000.app.pm.main.filters import *
 from app.mail import email
 
 Logger = logging.getLogger(__name__)
@@ -30,10 +30,7 @@ SORRY_MESSAGE="SORRY_MESSAGE"
 
 
 
-from flask.ext.cors import CORS,cross_origin
 
-#app = Flask(__name__)
-#CORS(app)
 
 
 class PmError(Exception):
@@ -196,7 +193,7 @@ def showProjectDetail(pid=None):
             
         form.name.data          =project.name
         form.description.data   =project.desc
-        form.owner.data         =project.owner.name
+        form.owner.data         =project.project_owner.name
         form.is_private.data    =project.is_private
         form.is_hidden.data     =project.is_hidden
         form.notes.data         =project.notes
@@ -647,7 +644,7 @@ def showMyWork():
         Logger.debug("showMyWork")
         _actor=current_user
 
-        _myOwnedProjects=Projects.query.filter(Projects.owner_id==_actor.id).all()
+        _myOwnedProjects=Projects.query.filter(Projects.project_owner_id==_actor.id).all()
         _myWorkProjects=_actor.projects
         _myTasks=_actor.tasks
         return render_template('showMyWork.html', myOwnedProjects=_myOwnedProjects, myWorkProjects=_myWorkProjects, tasks=_myTasks)
@@ -687,7 +684,7 @@ def login():
              flash('Login failed!')
             
     form.next.data=request.args.get('next')
-    print next
+    print (next)
            
     return render_template('login.html',form=form)
 

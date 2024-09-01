@@ -14,9 +14,9 @@ from sqlalchemy.orm import sessionmaker
 import string
 import random
 from random import randint
-import config
-import database
-from models import *
+import pm2000.config
+import pm2000.dal.database as database
+from pm2000.dal.models import *
 
 
 
@@ -74,19 +74,27 @@ def addSomeProjects():
            
             actors_in_project=_project.actors
             
-            ta=actors_in_project[0:randint(0,len(actors_in_project) )]
+            ta=random.sample(actors_in_project,randint(0,len(actors_in_project) ))
             
             print("adding task ....")
             
             task_name=("TASK_%d_%d_%s"%(x,t,  _project.name))
-            _task=Tasks.newTask( _project,random.choice(_actors),task_name,task_desc = "description", task_actors = [],dateDue = None,priority=None)
+            _task=Tasks.newTask( _project,random.choice(_actors),task_name,task_desc = "description", task_actors = ta,dateDue = None,priority=None)
             
             
-            
+            #subtack
             for s in range(randint(2, 5)):
+               
                 st_name=("SUB_TASK_%d_%d_%d_%s"%(x,t,s,  _task.name))
-                Tasks.newTask( _task,random.choice(_actors),st_name,task_desc = "sub task", task_actors = [],dateDue = None,priority=None)
+                _t=Tasks.newTask( _task,random.choice(_actors),st_name,task_desc = "sub task", task_actors = [],dateDue = None,priority=None)
                 print("adding sub task ........")
+                
+                #add comments to sub task
+                for s in range(randint(2, 10)):
+                    comment=''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(randint(20, 100)))
+                    _t.addComment(comment,random.choice(_actors).get_id())
+                    print("adding comment ........")
+                
             
  
 def AddClosedAs():

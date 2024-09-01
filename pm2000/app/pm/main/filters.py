@@ -1,5 +1,6 @@
 from . import main
-from jinja2 import evalcontextfilter, Markup, escape
+from jinja2 import pass_eval_context 
+from markupsafe import Markup,escape
 import re
 
 import logging
@@ -22,7 +23,7 @@ _paragraph_re = re.compile(r'(?:\r\n|\r|\n){2,}')
     
 
 @main.app_template_filter()
-@evalcontextfilter
+@pass_eval_context 
 def nl2br(eval_ctx, value):
    _paragraph_re = re.compile(r'(?:\r\n|\r(?!\n)|\n){2,}')
    result = u'\n\n'.join(u'<p>%s</p>' % p.replace(u'\r\n', u'<br/>') for p in _paragraph_re.split(value))
